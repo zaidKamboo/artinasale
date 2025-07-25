@@ -5,15 +5,14 @@ const {
   uploadProductConfig,
 } = require("../config/multer");
 
-/**
- * A reusable middleware generator for handling file uploads with detailed error handling.
- * @param {object} uploadConfig - The multer configuration object (e.g., uploadAvatarConfig).
- * @param {string} fieldName - The name of the field in the form-data that contains the file (e.g., 'avatar').
- * @returns {function} - An Express middleware function.
- */
 const createUploadMiddleware =
-  (uploadConfig, fieldName) => (req, res, next) => {
-    const upload = uploadConfig.single(fieldName);
+  (uploadConfig, fieldName, options = { type: "single" }) =>
+  (req, res, next) => {
+    let upload;
+
+    if (options.type === "array")
+      upload = uploadConfig.array(fieldName, maxCount);
+    else upload = uploadConfig.single(fieldName);
 
     upload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
@@ -24,9 +23,11 @@ const createUploadMiddleware =
               .status(400)
               .json({ message: `File is too large. Maximum size is allowed.` });
           case "LIMIT_FILE_COUNT":
-            return res
-              .status(400)
-              .json({ message: "Too many files uploaded." });
+            return res.status(400).json({
+              message: `Too many files uploaded. Max count is ${
+                options.maxCount || 1
+              }.`,
+            });
           case "LIMIT_UNEXPECTED_FILE":
             return res.status(400).json({
               message: `Unexpected field: ${err.field}. Please use '${fieldName}'.`,
@@ -43,12 +44,12 @@ const createUploadMiddleware =
         });
       }
 
-      console.log(
-        `[${fieldName}] upload successful`,
-        req.file
-          ? { filename: req.file.filename, path: req.file.path }
-          : "No file uploaded"
-      );
+      const filesInfo = req.files
+        ? req.files.map((f) => ({ filename: f.filename, path: f.path }))
+        : req.file
+        ? { filename: req.file.filename, path: req.file.path }
+        : "No file(s) uploaded";
+      console.log(`[${fieldName}] upload successful`, filesInfo);
       next();
     });
   };
@@ -57,17 +58,20 @@ const uploadAvatarMiddleware = createUploadMiddleware(
   uploadAvatarConfig,
   "avatar"
 );
+
 const uploadArtisanMiddleware = createUploadMiddleware(
   uploadArtisanConfig,
   "artisanImage"
 );
-const uploadProductMiddleware = createUploadMiddleware(
+
+const uploadProductImagesMiddleware = createUploadMiddleware(
   uploadProductConfig,
-  "productImage"
+  "productImages",
+  { type: "array", maxCount: 10 }
 );
 
 module.exports = {
   uploadAvatarMiddleware,
   uploadArtisanMiddleware,
-  uploadProductMiddleware,
+  uploadProductImagesMiddleware,
 };

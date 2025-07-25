@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user.model");
 const generateToken = require("../utils/generateToken");
+const cloudinary = require("../config/cloudinary");
 
 // @desc    Register a new user
 // @route   POST /api/users/register
