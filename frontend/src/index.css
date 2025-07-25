@@ -200,3 +200,106 @@
 .nprogress-custom-parent #nprogress .bar {
   position: absolute;
 }
+.To/* --- Advanced Custom Toast Styles for Artisanale --- */
+
+/* This is a shared base style for all toasts */
+.Toastify__toast {
+  background: rgba(20, 20, 25, 0.7) !important;
+  /* Slightly darker for better contrast */
+  backdrop-filter: blur(12px) !important;
+  border-radius: 12px !important;
+  color: #e5e7eb !important;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  position: relative;
+  overflow: hidden;
+  padding: 16px !important;
+}
+
+/* Shimmering animated gradient border effect */
+.Toastify__toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: linear-gradient(115deg, #a855f7, #ec4899, #a855f7) border-box;
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: shimmer-border 4s linear infinite;
+}
+
+/* Glint effect on hover */
+.Toastify__toast::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease-in-out;
+}
+
+.Toastify__toast:hover::after {
+  left: 150%;
+}
+
+@keyframes shimmer-border {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(to right, #a855f7, #ec4899) !important;
+}
+
+.Toastify__toast--error::before {
+  background: linear-gradient(115deg, #ef4444, #f87171, #ef4444) border-box;
+  background-size: 200% 100%;
+}
+
+.Toastify__progress-bar--error {
+  background: #ef4444 !important;
+}
+
+.Toastify__toast--info::before {
+  background: linear-gradient(115deg, #3b82f6, #60a5fa, #3b82f6) border-box;
+  background-size: 200% 100%;
+}
+
+.Toastify__progress-bar--info {
+  background: #3b82f6 !important;
+}
+
+.Toastify__toast--warning::before {
+  background: linear-gradient(115deg, #f97316, #fb923c, #f97316) border-box;
+  background-size: 200% 100%;
+}
+
+.Toastify__progress-bar--warning {
+  background: #f97316 !important;
+}
+
+.Toastify__toast-icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin-inline-end: 12px !important;
+}
+
+.Toastify__close-button>svg {
+  color: #e5e7eb !important;
+}

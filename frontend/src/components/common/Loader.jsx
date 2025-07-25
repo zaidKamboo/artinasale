@@ -1,11 +1,29 @@
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { ImSpinner9 } from "react-icons/im";
 import { useSelector } from 'react-redux';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { selectLoader } from "../../store/selectors";
 
+// Register the GSAP plugin
+gsap.registerPlugin( ScrollTrigger );
+
 export default function Loader() {
     const { isLoading } = useSelector( selectLoader );
+
+    // This effect will refresh ScrollTrigger's calculations whenever the loader is active.
+    // This is useful to ensure animations are correctly positioned after the loader disappears.
+    useEffect( () => {
+        if ( isLoading ) {
+            // A small delay helps ensure the layout is settled before refreshing
+            const timer = setTimeout( () => {
+                ScrollTrigger.refresh();
+            }, 100 );
+            return () => clearTimeout( timer );
+        }
+    }, [ isLoading ] );
 
     return (
         <AnimatePresence>
@@ -22,7 +40,7 @@ export default function Loader() {
                     <div className="text-center relative z-10 w-64">
                         <ImSpinner9 className="animate-spin text-5xl sm:text-6xl text-purple-400 mx-auto drop-shadow-[0_0_10px_rgba(192,132,252,0.8)]" />
                         <p className="mt-6 tracking-widest text-gray-300" style={ { fontFamily: "'Poppins', sans-serif" } }>
-                            Crafting the experience...
+                            Weaving the digital tapestry...
                         </p>
                     </div>
                 </motion.div>

@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 
 import BACKEND_HOST from "../../api/index";
 import {
+  CONTACT_ROUTES,
+  GET_PROFILE_ROUTE,
   LOGIN_ROUTE,
   LOGOUT_ROUTE,
   REGISTER_ROUTE,
@@ -23,18 +25,19 @@ export const logoutUser = (navigate) => (dispatch) => {
       })
       .catch((err) => {
         console.log(err);
-        toast.error(`Error : ${err?.message}`);
+        toast.error(`Error : ${err.response?.data?.message}`);
       })
       .finally(() => dispatch(finishLoading()));
   } catch (error) {
     console.log(error);
-    toast.error(`Error : ${error?.message}`);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    toast.error(errorMessage);
   }
 };
 
 export const loginUser = (userData, navigate) => (dispatch) => {
   try {
-    console.log("Called");
     BACKEND_HOST.post(LOGIN_ROUTE, userData, { withCredentials: true })
       .then((res) => {
         console.log(res);
@@ -44,18 +47,20 @@ export const loginUser = (userData, navigate) => (dispatch) => {
       })
       .catch((err) => {
         console.log(err);
-        toast.error(`Error : ${err?.message}`);
+        toast.error(`Error : ${err.response?.data?.message}`);
       })
       .finally(() => dispatch(finishLoading()));
   } catch (error) {
     console.log(error);
-    toast.error(`Error : ${error?.message}`);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    toast.error(errorMessage);
   }
 };
 
 export const registerUser = (userData, navigate) => (dispatch) => {
   try {
-    BACKEND_HOST.post(REGISTER_ROUTE, userData)
+    BACKEND_HOST.post(REGISTER_ROUTE, userData, { withCredentials: true })
       .then((res) => {
         console.log(res);
         dispatch(setUser(res.data));
@@ -64,12 +69,14 @@ export const registerUser = (userData, navigate) => (dispatch) => {
       })
       .catch((err) => {
         console.log(err);
-        toast.error(`Error : ${err?.message}`);
+        toast.error(`Error : ${err.response?.data?.message}`);
       })
       .finally(() => dispatch(finishLoading()));
   } catch (error) {
     console.log(error);
-    toast.error(`Error : ${error?.message}`);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    toast.error(errorMessage);
   }
 };
 
@@ -87,17 +94,63 @@ export const updateUserProfile = (userData, navigate) => (dispatch) => {
       )
       .finally(() => dispatch(finishLoading()));
   } catch (error) {
-    toast.error(`Error: ${error?.message}`);
-    dispatch(finishLoading());
+    toast.error(`Error: ${error.response?.data?.message}`);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    toast.error(errorMessage);
   }
 };
 
+export const getUserProfile = () => (dispatch) => {
+  try {
+    BACKEND_HOST.get(GET_PROFILE_ROUTE, { withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        dispatch(setUser(res.data));
+        // toast.success("Fetched profile successfully.");
+      })
+      .catch((err) => {
+        console.log(err);
+        // toast.error(`Error : ${err.response?.data?.message}`);
+      })
+      .finally(() => dispatch(finishLoading()));
+  } catch (error) {
+    console.log(error);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    // toast.error(errorMessage);
+  }
+};
+
+// CONTACT US
+export const contact = (data, navigate) => (dispatch) => {
+  try {
+    BACKEND_HOST.post(CONTACT_ROUTES, data, { withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        navigate("/");
+        toast.success(res?.data?.message);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(`Error : ${err.response?.data?.message}`);
+      })
+      .finally(() => dispatch(finishLoading()));
+  } catch (error) {
+    console.log(error);
+    const errorMessage =
+      error.response?.data?.message || "An unknown error occurred";
+    toast.error(errorMessage);
+  }
+};
 const userSlice = createSlice({
   name: "user",
   initialState: {},
   reducers: {
     setUser: (_, { payload: p }) => p,
-    logout: () => {},
+    logout: () => {
+      return {};
+    },
   },
 });
 

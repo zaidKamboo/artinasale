@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { selectUser } from '../../store/selectors';
-import { updateUserProfile } from '../../store/slices/user.slice';
+import { getUserProfile, updateUserProfile } from '../../store/slices/user.slice';
 import { startLoading } from '../../store/slices/loader.slice';
 
 const UserIcon = ( props ) =>
@@ -38,11 +38,17 @@ export default function UpdateProfile() {
     } );
     const [ avatarFile, setAvatarFile ] = useState( null );
     const [ avatarPreview, setAvatarPreview ] = useState( '' );
-
+    console.log( currentUser )
     useEffect( () => {
-        if ( !currentUser?._id ) {
+        if ( !currentUser.bio ) {
+            console.log( "DATA" )
+            dispatch( getUserProfile() )
+        }
+    }, [ currentUser ] )
+    useEffect( () => {
+        if ( !currentUser?._id ) 
             navigate( '/' );
-        } else {
+        else {
             setFormData( {
                 name: currentUser.name || '',
                 username: currentUser.username || '',

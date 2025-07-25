@@ -1,25 +1,36 @@
 
 import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+
 import Title from '../../components/common/Title';
+import { selectProducts } from '../../store/selectors';
+import { useEffect, useState } from 'react';
+import { getProducts } from '../../store/slices/products.slice';
+import { useNavigate } from 'react-router-dom';
+import { startLoading } from '../../store/slices/loader.slice';
+import ProductImageCarousel from '../../components/products/ProductImageCarousel';
+
+
+
+
 
 const CollectionScene = () => (
     <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 to-black"></div>
 );
 
-// --- Main Collection Component with Framer Motion Animations ---
 
 export default function Collection() {
-    // Placeholder data for the product collection
-    const products = [
-        { id: 1, name: 'Woven Dream Catcher', artisan: 'Elena Moonweaver', image: 'https://placehold.co/600x600/a855f7/ffffff?text=Woven+Dream' },
-        { id: 2, name: 'Ceramic Moon Vase', artisan: 'Kaelen Stonehand', image: 'https://placehold.co/600x600/ec4899/ffffff?text=Moon+Vase' },
-        { id: 3, name: 'Enchanted Silver Locket', artisan: 'Lyra Silversmith', image: 'https://placehold.co/600x600/8b5cf6/ffffff?text=Silver+Locket' },
-        { id: 4, name: 'Hand-carved Oakwood Box', artisan: 'Finnian Woodshaper', image: 'https://placehold.co/600x600/d946ef/ffffff?text=Oakwood+Box' },
-        { id: 5, name: 'Celestial Stained Glass', artisan: 'Aria Lightbringer', image: 'https://placehold.co/600x600/a855f7/ffffff?text=Stained+Glass' },
-        { id: 6, name: 'Leather-bound Grimoire', artisan: 'Roric Inkwell', image: 'https://placehold.co/600x600/ec4899/ffffff?text=Grimoire' },
-    ];
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect( () => {
+        dispatch( startLoading() );
+        dispatch( getProducts() );
+    }, [ dispatch ] )
+    const products = useSelector( selectProducts );
 
-    // Framer Motion variants for staggered animations
+    console.log( products )
+
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -81,25 +92,24 @@ export default function Collection() {
                 </motion.header>
 
                 <motion.div
-                    className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className=" max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+
                     variants={ containerVariants }
                 >
-                    { products.map( ( product ) => (
+                    { products?.map( ( product ) => (
                         <motion.div
-                            key={ product.id }
-                            className="group relative overflow-hidden rounded-2xl bg-gray-900/80 backdrop-blur-md border border-purple-900/30 shadow-2xl shadow-purple-500/10"
+                            key={ product._id }
+                            onClick={ () => navigate( `/product-details/${product?._id}` ) }
+                            className="hover:cursor-pointer group relative flex flex-col overflow-hidden rounded-2xl bg-gray-900/80 backdrop-blur-md border border-purple-900/30 shadow-2xl shadow-purple-500/10"
                             variants={ cardVariants }
                             whileHover={ { y: -8, transition: { duration: 0.3 } } }
                         >
-                            <img
-                                src={ product.image }
-                                alt={ product.name }
-                                className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
-                                onError={ ( e ) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x600/1f2937/ffffff?text=Not+Found'; } }
-                            />
-                            <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                            <ProductImageCarousel images={ product.images } name={ product.name } />
+
+                            <div className="flex flex-col justify-end flex-grow p-4 bg-gradient-to-t from-black/90 to-transparent">
                                 <h3 className="text-xl font-bold text-white">{ product.name }</h3>
-                                <p className="text-sm text-purple-300">by { product.artisan }</p>
+                                <p className="text-sm text-purple-300">by { product.artisan.name }</p>
+                                <p className="mt-1 text-sm text-gray-400">"{ product.description }"</p>
                             </div>
                         </motion.div>
                     ) ) }

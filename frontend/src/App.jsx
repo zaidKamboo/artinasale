@@ -12,6 +12,7 @@ import PortalScene from "./components/home/PortalScene";
 import TopLoadingBar from './components/common/TopLoadingBar';
 import { finishLoading } from './store/slices/loader.slice';
 import { selectLoader } from './store/selectors';
+import { getUserProfile } from './store/slices/user.slice';
 
 gsap.registerPlugin( ScrollTrigger );
 
@@ -92,6 +93,9 @@ export default function App() {
     return () => clearTimeout( timer );
   }, [ pathname ] );
 
+  useEffect( () => {
+    dispatch( getUserProfile() );
+  }, [ dispatch ] );
   const handleEnter = () => {
     try {
       sessionStorage.setItem( 'portal-entered', 'true' );
@@ -106,18 +110,18 @@ export default function App() {
     <div ref={ appContainerRef } className="bg-black min-h-screen font-sans antialiased text-white">
       <TopLoadingBar />
       <Loader />
-      <ToastContainer
-        position="top-right"
-        autoClose={ 5000 }
-        hideProgressBar={ false }
-        newestOnTop={ false }
-        closeOnClick
-        rtl={ false }
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+        <ToastContainer
+          position="top-right"
+          autoClose={ 5000 }
+          hideProgressBar={ false }
+          newestOnTop={ false }
+          closeOnClick
+          rtl={ false }
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       <div className="fixed inset-0 z-0 opacity-20 bg-[radial-gradient(#333_1px,transparent_1px)] bg-[size:20px_20px]" />
       <div className="fixed inset-0 z-0 bg-gradient-to-br from-black via-transparent to-black" />
 

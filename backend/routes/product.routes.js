@@ -5,6 +5,7 @@ const {
   getProductById,
   updateProduct,
   deleteProduct,
+  getUserProducts,
 } = require("../controllers/product.controller");
 const { isAuthenticatedUser } = require("../middlewares/auth.middleware");
 const {
@@ -15,7 +16,11 @@ router.route("/").get(getAllProducts);
 router.route("/:id").get(getProductById);
 
 router
-  .route("/")
+  .route("/user-products/:userId")
+  .get(isAuthenticatedUser, getUserProducts);
+
+router
+  .route("/create")
   .post(isAuthenticatedUser, uploadProductImagesMiddleware, createProduct);
 router
   .route("/:id")

@@ -12,6 +12,7 @@ import Profile from "./profile/Profile";
 import UpdateProfile from "./profile/UpdateProfile";
 import ProductDetails from "./products/ProductDetail";
 import CreateProduct from "./products/CreateProduct";
+import UpdateProduct from "./products/UpdateProduct";
 
 const MainLayout = () => {
   return <div className="flex flex-col min-h-screen ">
@@ -28,14 +29,18 @@ const MainLayout = () => {
 
 export default function AllRoutes() {
   const layoutRoutes = [
+    //GENERAL ROUTES
     { path: '/', element: <Home /> },
-    { path: '/collection', element: <Collection /> },
     { path: '/story', element: <OurStory /> },
     { path: '/contact', element: <Contact /> },
+    // PROFILE ROUTES
     { path: '/profile', element: <Profile /> },
     { path: '/profile/:id', element: <UpdateProfile /> },
-    { path: '/product-details', element: <ProductDetails /> },
+    //PRODUCT ROUTES
+    { path: '/collection', element: <Collection /> },
+    { path: '/product-details/:id', element: <ProductDetails /> },
     { path: '/create-product', element: <CreateProduct /> },
+    { path: '/update-product/:id', element: <UpdateProduct /> },
   ]
   const otherRoutes = [
     { path: '/login', element: <Login /> },

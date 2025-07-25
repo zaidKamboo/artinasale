@@ -54,17 +54,17 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email }).select("+password");
 
-  if (user && (await user.comparePassword(password, user.password))) {
-    generateToken(res, user._id);
-    return res.status(200).json({
+  if ( user && ( await user.comparePassword( password, user.password ) ) ) {
+    generateToken( res, user._id );
+    return res.status( 200 ).json( {
       _id: user._id,
       name: user.name,
       username: user.username,
       email: user.email,
       avatar: user.avatar,
-    });
+    } );
   } else {
-    res.status(401);
+    res.status( 401 ).send({message:"Invalid email or password"});
     throw new Error("Invalid email or password");
   }
 });
@@ -74,6 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
+  console.log(user);
   if (user) {
     res.json({
       _id: user._id,

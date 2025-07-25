@@ -1,11 +1,9 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register the GSAP ScrollTrigger plugin
 gsap.registerPlugin( ScrollTrigger );
 
-// Product data array
 const products = [
     {
         id: 1,
@@ -72,22 +70,22 @@ export default function ProductShowcase() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 w-full max-w-6xl">
-                { products.map( ( product ) => (
+                { products.map( ( { id, imageUrl, name, description } ) => (
                     <div
-                        key={ product.id }
+                        key={ id }
                         className="product-card bg-gray-900/80 backdrop-blur-sm border border-purple-900/50 rounded-xl overflow-hidden shadow-lg group transition-all duration-300 hover:shadow-purple-500/20 hover:border-purple-700/80"
                     >
                         <div className="overflow-hidden rounded-t-xl">
                             <img
-                                src={ product.imageUrl }
-                                alt={ product.name }
+                                src={ imageUrl }
+                                alt={ name }
                                 className="w-full h-64 sm:h-72 md:h-80 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                                 onError={ ( e ) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400/111827/ffffff?text=Image+Not+Found'; } }
                             />
                         </div>
                         <div className="p-5 sm:p-6">
-                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{ product.name }</h3>
-                            <p className="text-sm sm:text-base text-gray-400 mb-6 h-12">{ product.description }</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{ name }</h3>
+                            <p className="text-sm sm:text-base text-gray-400 mb-6 h-12">{ description }</p>
                             <button className="w-full py-3 text-sm sm:text-base bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-purple-500/40">
                                 View Details
                             </button>

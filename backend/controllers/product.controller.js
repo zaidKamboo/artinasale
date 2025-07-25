@@ -61,45 +61,59 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private (for admins/sellers)
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, description, price, category, stock, details, artisan } =
-    req.body;
-
-  const product = await Product.findById(req.params.id);
+  const { id: productId } = req.params;
+  console.log(productId);
+  const product = await Product.findById(productId);
 
   if (!product) {
     res.status(404);
     throw new Error("Product not found");
   }
 
-  // Optional: Check if the user is authorized to update this product
-  // if (product.user.toString() !== req.user._id.toString()) {
-  //   res.status(401);
-  //   throw new Error("User not authorized");
-  // }
+  if (product.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error("User not authorized to update this product");
+  }
 
-  product.name = name || product.name;
-  product.description = description || product.description;
-  product.price = price || product.price;
-  product.category = category || product.category;
-  product.stock = stock || product.stock;
-  product.details = details ? JSON.parse(details) : product.details;
-  product.artisan = artisan ? JSON.parse(artisan) : product.artisan;
+  if (req.body.name) product.name = req.body.name;
+  if (req.body.description) product.description = req.body.description;
+  if (req.body.price) product.price = req.body.price;
+  if (req.body.category) product.category = req.body.category;
+  if (req.body.stock) product.stock = req.body.stock;
+  if (req.body.details) product.details = JSON.parse(req.body.details);
+  if (req.body.artisan) product.artisan = JSON.parse(req.body.artisan);
 
-  // Handle image updates if new files are uploaded
+  let finalImages = [];
+
+  if (req.body.existingImages) {
+    finalImages = JSON.parse(req.body.existingImages);
+  }
+
+  const originalImageIds = product.images.map((img) => img.public_id);
+  const remainingImageIds = finalImages.map((img) => img.public_id);
+  const imagesToDelete = originalImageIds.filter(
+    (id) => !remainingImageIds.includes(id)
+  );
+
+  if (imagesToDelete.length > 0) {
+    await Promise.all(
+      imagesToDelete.map((publicId) => cloudinary.uploader.destroy(publicId))
+    );
+  }
+
   if (req.files && req.files.length > 0) {
-    // You might want more sophisticated logic here, like deleting old images
-    // or allowing specific images to be replaced.
     const newImages = req.files.map((file) => ({
       public_id: file.filename,
       url: file.path,
     }));
-    product.images = newImages;
+    finalImages.push(...newImages);
   }
 
-  const updatedProduct = await product.save();
-  res.json(updatedProduct);
-});
+  product.images = finalImages;
 
+  const updatedProduct = await product.save();
+  res.status(200).json(updatedProduct);
+});
 // @desc    Delete a product
 // @route   DELETE /api/products/:id
 // @access  Private (for admins/sellers)
@@ -107,10 +121,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    // Delete all images from Cloudinary associated with the product
-    for (const image of product.images) {
+    for (const image of product.images)
       await cloudinary.uploader.destroy(image.public_id);
-    }
 
     await product.remove();
     res.json({ message: "Product removed successfully" });
@@ -120,11 +132,25 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserProducts = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error("User ID not provided.");
+  }
+
+  const products = await Product.find({ user: userId });
+
+  res.status(200).json(products);
+});
+
 module.exports = {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  getUserProducts,
 };
     

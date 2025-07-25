@@ -27,7 +27,7 @@ const ProfileIcon = ( { className } ) => (
 );
 
 
-const Header = () => {
+export default function Header() {
     const user = useSelector( selectUser );
     const [ isMenuOpen, setIsMenuOpen ] = useState( false );
     const [ isVisible, setIsVisible ] = useState( true );
@@ -64,7 +64,7 @@ const Header = () => {
         return () => window.removeEventListener( "scroll", handleScroll );
     }, [] );
 
-    const linkClasses = "uppercase tracking-widest text-sm font-semibold transition-all duration-300";
+    const linkClasses = "hover:cursor-pointer uppercase tracking-widest text-sm font-semibold transition-all duration-300";
     const activeLinkClasses = "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600";
     const inactiveLinkClasses = "text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-purple-400 hover:to-pink-600";
 
@@ -98,7 +98,8 @@ const Header = () => {
                         <li>
                             { user?._id ? (
                                 <NavLink to="/profile" title="Go to Profile">
-                                    { user.avatar.public ? (
+                                    {/* FIX: Changed user.avatar.public to user.avatar?.public_id */ }
+                                    { user.avatar?.public_id ? (
                                         <img src={ user.avatar.url } alt="Profile" className="h-10 w-10 rounded-full object-cover border-2 border-purple-400 hover:border-pink-500 transition-all" />
                                     ) : (
                                         <div className="h-10 w-10 rounded-full border-2 border-purple-400 flex items-center justify-center bg-gray-800 hover:border-pink-500 transition-all">
@@ -107,7 +108,7 @@ const Header = () => {
                                     ) }
                                 </NavLink>
                             ) : (
-                                <button className=" px-8 py-1 border-2 border-purple-400 text-purple-400 font-semibold rounded-lg hover:bg-purple-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.6)] hover:shadow-[0_0_25px_rgba(138,43,226,1)]" onClick={ () => navigate( "/login" ) } >
+                                    <button className="hover:cursor-pointer px-8 py-1 border-2 border-purple-400 text-purple-400 font-semibold rounded-lg hover:bg-purple-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.6)] hover:shadow-[0_0_25px_rgba(138,43,226,1)]" onClick={ () => navigate( "/login" ) } >
                                     Login
                                 </button>
                             ) }
@@ -115,7 +116,7 @@ const Header = () => {
                     </ul>
 
                     <button className="md:hidden text-white z-50" onClick={ () => setIsMenuOpen( !isMenuOpen ) }>
-                        { isMenuOpen ? <CloseIcon className="h-7 w-7" /> : <MenuIcon className="h-7 w-7" /> }
+                        { isMenuOpen ? <CloseIcon className="hover:cursor-pointer h-7 w-7 duration-200 transition-all" /> : <MenuIcon className="hover:cursor-pointer h-7 w-7 duration-200 transition-all" /> }
                     </button>
                 </nav>
             </header>
@@ -141,7 +142,7 @@ const Header = () => {
                     <li>
                         { user?._id ? (
                             <NavLink to="/profile" className="flex items-center space-x-4">
-                                { user.avatar?.public ? (
+                                { user.avatar?.public_id ? (
                                     <img src={ user?.avatar?.url } alt="Profile" className="h-12 w-12 rounded-full object-cover border-2 border-purple-400" />
                                 ) : (
                                     <div className="h-12 w-12 rounded-full border-2 border-purple-400 flex items-center justify-center bg-gray-800">
@@ -151,7 +152,7 @@ const Header = () => {
                                 <span className="text-2xl text-white">Profile</span>
                             </NavLink>
                         ) : (
-                            <button onClick={ () => navigate( '/login' ) } className="mt-6 px-8 py-3 border-2 border-purple-400 text-purple-400 font-semibold rounded-lg hover:bg-purple-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.6)] hover:shadow-[0_0_25px_rgba(138,43,226,1)]">
+                                <button onClick={ () => navigate( '/login' ) } className="hover:cursor-pointer mt-6 px-8 py-3 border-2 border-purple-400 text-purple-400 font-semibold rounded-lg hover:bg-purple-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(138,43,226,0.6)] hover:shadow-[0_0_25px_rgba(138,43,226,1)]">
                                 Login
                             </button>
                         ) }
@@ -162,4 +163,3 @@ const Header = () => {
     );
 };
 
-export default Header;

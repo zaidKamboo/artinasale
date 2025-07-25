@@ -6,13 +6,16 @@ const {
 } = require("../config/multer");
 
 const createUploadMiddleware =
-  (uploadConfig, fieldName, options = { type: "single" }) =>
+  (uploadConfig, fieldName, options = { type: "single", maxCount: 1 }) =>
   (req, res, next) => {
     let upload;
 
-    if (options.type === "array")
-      upload = uploadConfig.array(fieldName, maxCount);
-    else upload = uploadConfig.single(fieldName);
+    if (options.type === "array") {
+      // FIX: Access maxCount from the options object
+      upload = uploadConfig.array(fieldName, options.maxCount);
+    } else {
+      upload = uploadConfig.single(fieldName);
+    }
 
     upload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
@@ -24,9 +27,7 @@ const createUploadMiddleware =
               .json({ message: `File is too large. Maximum size is allowed.` });
           case "LIMIT_FILE_COUNT":
             return res.status(400).json({
-              message: `Too many files uploaded. Max count is ${
-                options.maxCount || 1
-              }.`,
+              message: `Too many files uploaded. Max count is ${options.maxCount}.`,
             });
           case "LIMIT_UNEXPECTED_FILE":
             return res.status(400).json({
