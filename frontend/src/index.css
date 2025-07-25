@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@import "@fontsource/poppins";
+@import "@fontsource/playfair-display";
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(2px, -2px);
+  }
+
+  60% {
+    transform: translate(-1px, 1px);
+  }
+
+  80% {
+    transform: translate(1px, -1px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Define the utility classes */
+.animate-glitch-1 {
+  animation: glitch 1s infinite linear alternate-reverse;
+}
+
+.animate-glitch-2 {
+  animation: glitch 1s infinite linear alternate;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 1.2s ease-out both;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.5s ease-in forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite;
+}
+
+.poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.playfair-display {
+  font-family: 'Playfair Display', serif;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-position: center;
+  background-image: radial-gradient(#513168, rgb(255, 58, 91));
+  animation: fadePulse 2s infinite ease-in-out;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #01080c;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in {
+  opacity: 1 !important;
+  transform: translateY(0px) !important;
+}
+
+@keyframes clash {
+
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  20% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+
+  40% {
+    transform: rotate(5deg) scale(1.05);
+  }
+
+  60% {
+    transform: rotate(-2deg);
+  }
+
+  80% {
+    transform: rotate(2deg);
+  }
+}
+
+.animate-clash {
+  animation: clash 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(236, 72, 153, 0.4));
+    opacity: 0.8;
+  }
+
+  50% {
+    filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.8));
+    opacity: 1;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+
+/* nprogress-custom.css */
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: purple;
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+}
+
+#nprogress .peg {
+  display: none;
+  /* Hide the peg */
+}
+
+#nprogress .spinner {
+  display: none;
+  /* Hide the spinner */
+}
+
+.nprogress-custom-parent {
+  overflow: hidden;
+  position: relative;
+}
+
+.nprogress-custom-parent #nprogress .bar {
+  position: absolute;
+}
