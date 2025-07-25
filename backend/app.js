@@ -45,6 +45,4 @@ connectDB()
         console.log(`🚀 Server is listening on http://localhost:${PORT}`)
       );
   })
-  .catch((err) => {
-    console.log("Error connecting to db", err);
-  });
+  .catch((err) => console.log("Error connecting to db", err));
