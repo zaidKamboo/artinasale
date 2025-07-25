@@ -12,19 +12,29 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://artinasale.vercel.app",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg =
+        "The CORS policy for this site does not allow access from the specified Origin.";
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+};
+
 connectDB()
   .then(() => {
     app
-      .use(
-        cors({
-          origin: [
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "https://artinasale.vercel.app/",
-          ],
-          credentials: true,
-        })
-      )
+      .use(cors(corsOptions))
       .use(cookieParser())
       .use(express.json())
       .use(express.urlencoded({ extended: true }))
