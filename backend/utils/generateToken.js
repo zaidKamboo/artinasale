@@ -8,6 +8,8 @@ const generateToken = (res, userId) => {
   res.cookie("token", token, {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: "None",
+    secure: true,
   });
   console.log("cookie set", res.cookies);
 };
